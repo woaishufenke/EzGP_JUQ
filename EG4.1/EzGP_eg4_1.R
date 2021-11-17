@@ -4,14 +4,14 @@
 ###Each replication may take up to several minutes varied by computers; 
 ###To further reduce computing time, you can set "maxeval" = 50 in the following codes
 
-# clear menory
+# clear memory
 rm(list=ls())
 
-###R pacakge required
+###R package required
 library('nloptr')
 library(parallel)
 
-#set number of quanititave factors
+#set number of quantitative factors
 p = 3 
 #set number of qualitative factors
 q = 3
@@ -69,7 +69,7 @@ parafunc <- function(ii, p, q, m, n, n2, tau) ##iith replication.
       }
       else{
         l = z1[i]
-        res1 = res1 + par1[i+1]*exp(psum(x1,x2, par3[(9*(i-1)+3*(l-1)+1) : (9*(i-1)+3*(l-1)+3)]))
+        res1 = res1 + par1[i+1]*exp(psum(x1,x2, par3[(sum(m[1:i])*p - m[i]*p + (l-1)*p + 1) : (sum(m[1:i])*p - m[i]*p + (l-1)*p + p)]))
       }
     }
     return(res1)
@@ -159,7 +159,7 @@ parafunc <- function(ii, p, q, m, n, n2, tau) ##iith replication.
         else{
           l = as.numeric(z1[h])
           par3 = parv[(q+2+p): npar]
-          gx = exp(psum(x1,x2, par3[(sum(m)*(h-1)+m[h]*(l-1)+1) : (sum(m)*(h-1)+m[h]*l)]))
+          gx = exp(psum(x1,x2, par3[(sum(m[1:h])*p - m[h]*p + (l-1)*p + 1) : (sum(m[1:h])*p - m[h]*p + (l-1)*p + p)]))
           return(as.numeric(gx))
         }
       }
@@ -214,7 +214,7 @@ parafunc <- function(ii, p, q, m, n, n2, tau) ##iith replication.
           par1 = parv[1:(q+1)]
           #correlation parameter in G1 to Gq
           par3 = parv[(q+2+p): npar]
-          gx = -par1[h+1] * (x1[s] - x2[s])^2 * exp(psum(x1,x2, par3[(sum(m)*(h-1)+m[h]*(l-1)+1) : (sum(m)*(h-1)+m[h]*l)]))
+          gx = -par1[h+1] * (x1[s] - x2[s])^2 * exp(psum(x1,x2, par3[(sum(m[1:h])*p - m[h]*p + (l-1)*p + 1) : (sum(m[1:h])*p - m[h]*p + (l-1)*p + p)]))
           return(as.numeric(gx))
         }
       }
@@ -330,6 +330,8 @@ parafunc <- function(ii, p, q, m, n, n2, tau) ##iith replication.
   return(c(rmseresult,nse))
   #return(c(rmseresult,nse, solpar, grad))
 }
+
+
 
 # Calculate the number of cores
 no_cores <- detectCores()
